@@ -12,7 +12,6 @@ protected:
 
 public:
     HTTPResponseMessage(std::string buffer);
-    ~HTTPResponseMessage();
     int getStatus();
     std::string getStatusMessage();
 };

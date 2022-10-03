@@ -17,7 +17,6 @@ protected:
 public:
     HTTPMessage(std::string buffer);
     HTTPMessage(headerMap headers, std::string data /*""*/);
-    ~HTTPMessage();
     float getVersion();
     headerMap getHeaders();
     std::string getData();
