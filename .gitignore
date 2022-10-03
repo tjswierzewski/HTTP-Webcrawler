@@ -1,3 +1,4 @@
 webcrawler
 *.o
+*.a
 .vscode

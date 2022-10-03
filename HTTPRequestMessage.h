@@ -2,19 +2,19 @@
 #define HTTP_REQUEST_MESSAGE_H
 
 #include "HTTPMessage.h"
-#include "HTTPMethod.h"
 #include <string>
 
 class HTTPRequestMessage : public HTTPMessage
 {
 protected:
-    HTTPMethod method;
+    std::string method;
     std::string path;
 
 public:
-    HTTPRequestMessage(float version, HTTPMethod method, std::string path, headerMap headers, std::string data = NULL);
-    HTTPMethod getMethod();
+    HTTPRequestMessage(float version, std::string method, std::string path, HTTPMessage::headerMap headers, std::string data);
+    std::string getMethod();
     std::string getPath();
+    std::string format();
 };
 
 #endif

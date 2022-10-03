@@ -2,6 +2,7 @@
 #define HTTP_RESPONSE_MESSAGE_H
 
 #include <string>
+#include "HTTPMessage.h"
 
 class HTTPResponseMessage : public HTTPMessage
 {

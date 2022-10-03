@@ -5,7 +5,7 @@
 #include <string>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <HTMLMessage.h>
+#include "HTTPResponseMessage.h"
 
 class HTTPSSession
 {

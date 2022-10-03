@@ -1,14 +1,13 @@
 #include "HTTPRequestMessage.h"
 #include "HTTPMethod.h"
 
-HTTPRequestMessage(float version, HTTPMethod method, std::string path, headerMap headers, std::string data = NULL)
+HTTPRequestMessage::HTTPRequestMessage(float version, std::string method, std::string path, HTTPMessage::headerMap headers, std::string data = NULL) : HTTPMessage(headers, data)
 {
     this->version = version;
     this->method = method;
     this->path = path;
-    HTTPMessage::HTTPMessage(headers, data);
 }
-HTTPMethod HTTPRequestMessage::getMethod()
+std::string HTTPRequestMessage::getMethod()
 {
     return this->method;
 }
@@ -19,7 +18,7 @@ std::string HTTPRequestMessage::getPath()
 std::string HTTPRequestMessage::format()
 {
     std::string output;
-    output += this->method.value();
+    output += this->method;
     output += " ";
     output += this->path;
     output += " HTTP/";
@@ -30,9 +29,11 @@ std::string HTTPRequestMessage::format()
         output += key;
         output += ": ";
         output += value;
-        output += "\r\n"
+        output += "\r\n";
     }
-    ouput += "\r\n";
-    ouput += data;
+    output += "\r\n";
+    output += data;
     output += "\n\0";
+
+    return output;
 }

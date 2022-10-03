@@ -1,4 +1,5 @@
 #include "HTTPSSession.h"
+#include "HTTPResponseMessage.h"
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -52,7 +53,7 @@ int HTTPSSession::connectToHost()
         return -1;
     }
 
-    sock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+    sock = ::socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
     if (sock < 0)
     {
         perror("socket");
@@ -80,7 +81,7 @@ SSL_CTX *HTTPSSession::InitCTX(void)
     return ctx;
 }
 
-void HTTPSSession::get(std::string path, char *buffer, size_t bufferSize)
+HTTPResponseMessage HTTPSSession::get(std::string path, char *buffer, size_t bufferSize)
 {
     int rc;
     std::string output;
@@ -95,4 +96,5 @@ void HTTPSSession::get(std::string path, char *buffer, size_t bufferSize)
     {
         rc += SSL_read(ssl, buffer + rc, bufferSize - rc);
     }
+    return HTTPResponseMessage(buffer);
 }

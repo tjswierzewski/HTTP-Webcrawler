@@ -1,6 +1,6 @@
 #include "HTTPResponseMessage.h"
 
-HTTPResponseMessage(std::string buffer)
+HTTPResponseMessage::HTTPResponseMessage(std::string buffer) : HTTPMessage(buffer)
 {
     while (buffer.find_first_of("\r\n") != 0)
     {
@@ -12,7 +12,6 @@ HTTPResponseMessage(std::string buffer)
         this->version = std::stoi(buffer.substr(0, delim));
         buffer.erase(0, delim);
     }
-    HTTPMessage::HTTPMessage(buffer);
 }
 
 int HTTPResponseMessage::getStatus()

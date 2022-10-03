@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <string>
-#include "HTTPSSession.h"
+#include "HTTPSession.h"
 
 #define HOST "project2.5700.network"
 #define PORT "443"
