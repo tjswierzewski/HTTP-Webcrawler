@@ -12,7 +12,7 @@ protected:
     typedef std::map<std::string, std::string> headerMap;
     headerMap headers;
     std::string data;
-    void parseHeaders(std::string buffer);
+    void parseHeaders(std::string *buffer);
 
 public:
     HTTPMessage(std::string buffer);
