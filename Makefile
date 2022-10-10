@@ -10,7 +10,7 @@ webcrawler: webcrawler.o http.a
 webcrawler.o: webcrawler.cpp
 	${CC} -c $< ${DFLAGS} ${CFLAGS} -o $@
 
-http.a: HTTPSSession.o HTTPMessage.o HTTPRequestMessage.o HTTPResponseMessage.o
+http.a: HTTPSSession.o HTTPMessage.o HTTPRequestMessage.o HTTPResponseMessage.o HTTPMethod.o
 	ar cr $@ $^
 
 HTTPSSession.o: HTTPSSession.cpp
@@ -25,6 +25,10 @@ HTTPResponseMessage.o: HTTPResponseMessage.cpp
 HTTPRequestMessage.o: HTTPRequestMessage.cpp
 	${CC} -c $< ${DFLAGS} ${CFLAGS} -o $@
 
+HTTPMethod.o: HTTPMethod.cpp
+	${CC} -c $< ${DFLAGS} ${CFLAGS} -o $@
 
+HTMLElement.o: HTMLElement.o
+	${CC} -c $< ${DFLAGS} ${CFLAGS} -o $@
 clean:
 	rm -f webcrawler webcrawler.o HTTPSSession.o HTTPMessage.o HTTPRequestMessage.o HTTPResponseMessage.o http.a
