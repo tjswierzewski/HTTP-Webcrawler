@@ -1,5 +1,8 @@
 #include "HTTPSSession.h"
+#include "HTTPMessage.h"
 #include "HTTPResponseMessage.h"
+#include "HTTPRequestMessage.h"
+#include "HTTPMethod.h"
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -8,6 +11,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <iostream>
+
+#define BUFFER_SIZE 10000
 
 HTTPSSession::HTTPSSession(const char *host, const char *port)
 {
@@ -81,20 +86,20 @@ SSL_CTX *HTTPSSession::InitCTX(void)
     return ctx;
 }
 
-HTTPResponseMessage HTTPSSession::get(std::string path, char *buffer, size_t bufferSize)
+HTTPResponseMessage HTTPSSession::get(std::string path)
 {
     int rc;
-    std::string output;
-    output.append("GET ");
-    output.append(path);
-    output.append(" HTTP/1.0\r\nHOST: ");
-    output.append(this->host);
-    output.append("\r\nUSER-AGENT: Webcrawler/TS\r\n\r\n");
+    char buffer[BUFFER_SIZE];
+    HTTPMessage::headerMap headers;
+    headers["HOST"] = this->host;
+    headers["USER-AGENT"] = "Webcrawler/TS";
+    HTTPRequestMessage request(1.0, HTTPMethod::Get, path, headers);
+    std::string output = request.format();
     SSL_write(ssl, output.c_str(), output.length());
-    rc = SSL_read(ssl, buffer, bufferSize);
-    while (rc < bufferSize && buffer[rc - 1] != '\n')
+    rc = SSL_read(ssl, buffer, BUFFER_SIZE);
+    while (rc < BUFFER_SIZE && buffer[rc - 1] != '\n')
     {
-        rc += SSL_read(ssl, buffer + rc, bufferSize - rc);
+        rc += SSL_read(ssl, buffer + rc, BUFFER_SIZE - rc);
     }
     return HTTPResponseMessage(buffer);
 }

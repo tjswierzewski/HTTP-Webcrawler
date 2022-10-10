@@ -2,3 +2,4 @@ webcrawler
 *.o
 *.a
 .vscode
+html

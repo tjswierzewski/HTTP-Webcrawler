@@ -11,7 +11,7 @@ protected:
     std::string path;
 
 public:
-    HTTPRequestMessage(float version, std::string method, std::string path, HTTPMessage::headerMap headers, std::string data);
+    HTTPRequestMessage(float version, std::string method, std::string path, HTTPMessage::headerMap headers, std::string data = "");
     std::string getMethod();
     std::string getPath();
     std::string format();

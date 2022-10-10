@@ -9,8 +9,10 @@
 
 class HTTPSSession
 {
-private:
+public:
     typedef std::map<std::string, std::string> cookiesMap;
+
+private:
     cookiesMap cookies;
     int socket;
     const char *host, *port;
@@ -25,6 +27,6 @@ private:
 public:
     HTTPSSession(const char *host, const char *port);
     ~HTTPSSession();
-    HTTPResponseMessage get(std::string path, char *buffer, size_t bufferSize);
+    HTTPResponseMessage get(std::string);
 };
 #endif

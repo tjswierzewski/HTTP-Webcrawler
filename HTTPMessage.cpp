@@ -1,5 +1,7 @@
 #include "HTTPMessage.h"
 #include <string>
+#include <iomanip>
+#include <sstream>
 
 HTTPMessage::HTTPMessage(std::string buffer)
 {
@@ -8,7 +10,7 @@ HTTPMessage::HTTPMessage(std::string buffer)
     parseHeaders(&buffer);
     this->data = buffer;
 }
-HTTPMessage::HTTPMessage(headerMap headers, std::string data = "")
+HTTPMessage::HTTPMessage(headerMap headers, std::string data)
 {
     this->headers = headers;
     this->data = data;
@@ -41,4 +43,11 @@ void HTTPMessage::parseHeaders(std::string *buffer)
         this->headers[header] = value;
     }
     buffer->erase(0, 2);
+}
+
+std::string HTTPMessage::printVersion()
+{
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(1) << this->version;
+    return ss.str();
 }
