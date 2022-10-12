@@ -1,8 +1,9 @@
 #include <iostream>
 #include <string.h>
 #include <string>
-#include "HTTPSSession.h"
 #include <fstream>
+#include "HTTPSSession.h"
+#include "HTMLElement.h"
 
 #define HOST "project2.5700.network"
 #define PORT "443"
@@ -17,12 +18,7 @@ int main(int argc, char const *argv[])
 
     HTTPResponseMessage res = session.get("/");
 
-    std::ofstream myFile;
-    myFile.open("html");
-    myFile << res.getData();
-    myFile.close();
-
-    // Keep track of searched pages in set
+    std::list<HTMLElement> html = HTMLElement::parseDocument(res.getData());
 
     return 0;
 }

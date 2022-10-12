@@ -4,7 +4,7 @@ CFLAGS = -std=c++17
 LIBS = -L/usr/lib/ssl/lib -lssl -lcrypto
 
 
-webcrawler: webcrawler.o http.a
+webcrawler: webcrawler.o http.a HTMLElement.o
 	${CC} $^ ${DFLAGS} ${CFLAGS} -o $@ ${LIBS}
 
 webcrawler.o: webcrawler.cpp
