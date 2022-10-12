@@ -3,18 +3,19 @@
 
 #include <string>
 #include <list>
+#include <map>
 
 class HTMLElement
 {
 private:
     std::string type;
     std::string content;
-    std::string attributes;
+    std::map<std::string, std::string> attributes;
     std::list<HTMLElement> children;
+    static std::map<std::string, std::string> parseAttributes(std::string doc);
 
 public:
-    HTMLElement(std::string type, std::string attributes, std::string content);
-    // Make list of HTML Elements that is search able to children level
+    HTMLElement(std::string type, std::map<std::string, std::string> attributes, std::string content);
     static std::list<HTMLElement> parseDocument(std::string doc);
     static std::list<HTMLElement> parseElements(std::string doc);
 };

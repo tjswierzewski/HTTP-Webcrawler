@@ -1,13 +1,14 @@
 #include "HTMLElement.h"
 #include <string>
-#include <list>
 #include <sstream>
+#include <list>
+#include <map>
 
-HTMLElement::HTMLElement(std::string type, std::string attributes, std::string content)
+HTMLElement::HTMLElement(std::string type, std::map<std::string, std::string> attributes, std::string content)
 {
     this->type = type;
     this->attributes = attributes;
-    if (content.find_first_of("<") == std::string::npos)
+    if (content.find("<") == std::string::npos)
     {
         this->content = content;
     }
@@ -19,15 +20,15 @@ HTMLElement::HTMLElement(std::string type, std::string attributes, std::string c
 }
 std::list<HTMLElement> HTMLElement::parseDocument(std::string doc)
 {
-    int HTMLOpen = doc.find_first_of("<!");
-    int HTMLClose = doc.find_first_of(">", HTMLOpen);
+    int HTMLOpen = doc.find("<!");
+    int HTMLClose = doc.find(">", HTMLOpen);
     doc.erase(0, HTMLClose + 1);
     return HTMLElement::parseElements(doc);
 }
 
 std::list<HTMLElement> HTMLElement::parseElements(std::string doc)
 {
-    std::string attributes = "";
+    std::map<std::string, std::string> attributes;
     std::string type = "";
     std::string content = "";
     std::list<HTMLElement> elements;
@@ -47,7 +48,8 @@ std::list<HTMLElement> HTMLElement::parseElements(std::string doc)
         }
         else
         {
-            attributes = doc.substr(typeSpace + 1, HTMLClose - (typeSpace + 1));
+            std::string attributesString = doc.substr(typeSpace + 1, HTMLClose - (typeSpace + 1));
+            attributes = HTMLElement::parseAttributes(attributesString);
         }
         type = doc.substr(HTMLOpen + 1, typeSpace - (HTMLOpen + 1));
         if (type != "meta" && type != "link" && type != "hr")
@@ -74,4 +76,22 @@ std::list<HTMLElement> HTMLElement::parseElements(std::string doc)
         elements.push_back(element);
     }
     return elements;
+}
+
+std::map<std::string, std::string> HTMLElement::parseAttributes(std::string doc)
+{
+    std::map<std::string, std::string> attributes;
+    std::string key, value;
+    int stringPointer;
+    while (doc.length() > 0)
+    {
+        stringPointer = doc.find("=");
+        key = doc.substr(0, stringPointer);
+        doc.erase(0, stringPointer + 2);
+        stringPointer = doc.find("\"");
+        value = doc.substr(0, stringPointer);
+        doc.erase(0, stringPointer + 2);
+        attributes[key] = value;
+    }
+    return attributes;
 }
