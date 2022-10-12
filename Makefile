@@ -28,7 +28,12 @@ HTTPRequestMessage.o: HTTPRequestMessage.cpp
 HTTPMethod.o: HTTPMethod.cpp
 	${CC} -c $< ${DFLAGS} ${CFLAGS} -o $@
 
-HTMLElement.o: HTMLElement.o
+HTMLElement.o: HTMLElement.cpp
 	${CC} -c $< ${DFLAGS} ${CFLAGS} -o $@
+
+HTMLTest: HTMLElement.cpp HTMLTest.cpp
+	${CC} $^ ${DFLAGS} ${CFLAGS} -o $@ -L/usr/lib/aarch64-linux-gnu/debug/libstdc++.so.6
+
 clean:
 	rm -f webcrawler webcrawler.o HTTPSSession.o HTTPMessage.o HTTPRequestMessage.o HTTPResponseMessage.o http.a
+	rm -f HTMLTest HTMLElement.o
