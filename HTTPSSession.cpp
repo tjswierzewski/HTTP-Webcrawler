@@ -12,8 +12,17 @@
 #include <unistd.h>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
-#define BUFFER_SIZE 10000
+#define BUFFER_SIZE 100000
+
+void ctx_callback(const SSL *ssl, const char *line)
+{
+    std::ofstream file;
+    file.open("log.key");
+    file << line;
+    file.close();
+}
 
 HTTPSSession::HTTPSSession(const char *host, const char *port)
 {
@@ -26,6 +35,7 @@ HTTPSSession::HTTPSSession(const char *host, const char *port)
     }
     SSL_library_init();
     this->ctx = InitCTX();
+    SSL_CTX_set_keylog_callback(ctx, ctx_callback);
     this->ssl = SSL_new(ctx);
     SSL_set_fd(this->ssl, this->socket);
     if (SSL_connect(ssl) == -1)
@@ -90,7 +100,7 @@ SSL_CTX *HTTPSSession::InitCTX(void)
 HTTPResponseMessage HTTPSSession::get(std::string path)
 {
     HTTPMessage::headerMap headers;
-    HTTPRequestMessage request(1.0, HTTPMethod::Get, path, headers);
+    HTTPRequestMessage request(1.1, HTTPMethod::Get, path, headers);
     return this->send(request);
 }
 
@@ -98,22 +108,46 @@ HTTPResponseMessage HTTPSSession::send(HTTPRequestMessage request)
 {
     int rc;
     char buffer[BUFFER_SIZE];
+    std::ostringstream input;
+    memset(buffer, 0, sizeof(buffer));
     request.setHeader("HOST", this->host);
     request.setHeader("USER-AGENT", "Webcrawler/TS");
     if (!this->cookies.empty())
     {
-        request.setHeader("cookies", this->sendCookies());
+        request.setHeader("Cookie", this->sendCookies());
     }
 
     std::string output = request.format();
-    SSL_write(ssl, output.c_str(), output.length());
-    rc = SSL_read(ssl, buffer, BUFFER_SIZE);
-    while (rc < BUFFER_SIZE && buffer[rc - 1] != '\n')
+    rc = SSL_write(ssl, output.c_str(), output.length());
+    while (rc < output.length())
     {
-        rc += SSL_read(ssl, buffer + rc, BUFFER_SIZE - rc);
+        rc += SSL_write(ssl, (char *)output.c_str() + rc, output.length() - rc);
+    }
+    rc = 0;
+    while (input.str().find("\r\n\r\n") == std::string::npos)
+    {
+        rc += SSL_read(ssl, buffer + rc, 1);
+        input << buffer[rc - 1];
     }
     HTTPResponseMessage response(buffer);
+    char *content = buffer + rc;
+    if (response.getHeaders().count("Content-Length"))
+    {
+        rc = 0;
+        while (rc < std::stoi(response.getHeaders().find("Content-Length")->second))
+        {
+            rc += SSL_read(ssl, content + rc, std::stoi(response.getHeaders().find("Content-Length")->second) - rc);
+        }
+    }
+    std::string data(content);
+    response.setData(data);
     this->updateSession(response);
+    if (response.getStatus() == 302 || response.getStatus() == 301)
+    {
+        request.setPath(response.getHeaders().find("Location")->second);
+        response = this->send(request);
+    }
+
     return response;
 }
 
@@ -152,10 +186,11 @@ std::string HTTPSSession::sendCookies()
     return output;
 }
 
-HTTPResponseMessage HTTPSSession::post(std::string path, std::string data)
+HTTPResponseMessage HTTPSSession::post(std::string path, std::string data, std::string type)
 {
     HTTPMessage::headerMap headers;
-    headers["Content-Length"] = data.length();
-    HTTPRequestMessage request(1.0, HTTPMethod::Post, path, headers, data);
+    headers.insert(std::make_pair("Content-Length", std::to_string(data.length())));
+    headers.insert(std::make_pair("Content-Type", type));
+    HTTPRequestMessage request(1.1, HTTPMethod::Post, path, headers, data);
     return this->send(request);
 }

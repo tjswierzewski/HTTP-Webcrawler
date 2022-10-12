@@ -20,5 +20,7 @@ public:
     static std::list<HTMLElement> parseDocument(std::string doc);
     static std::list<HTMLElement> parseElements(std::string doc);
     static std::list<HTMLElement> search(std::list<HTMLElement> list, const std::function<bool(HTMLElement)> &f);
+    std::map<std::string, std::string> getAttributes();
+    std::string getContent();
 };
 #endif

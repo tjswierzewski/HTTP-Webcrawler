@@ -14,6 +14,10 @@ std::string HTTPRequestMessage::getPath()
 {
     return this->path;
 }
+void HTTPRequestMessage::setPath(std::string path)
+{
+    this->path = path;
+}
 std::string HTTPRequestMessage::format()
 {
     std::string output;
@@ -31,8 +35,9 @@ std::string HTTPRequestMessage::format()
         output += "\r\n";
     }
     output += "\r\n";
+
     output += data;
-    output += "\n\0";
+    output += "\0";
 
     return output;
 }

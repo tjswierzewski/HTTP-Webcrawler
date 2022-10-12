@@ -32,6 +32,6 @@ public:
     HTTPSSession(const char *host, const char *port);
     ~HTTPSSession();
     HTTPResponseMessage get(std::string path);
-    HTTPResponseMessage post(std::string path, std::string data);
+    HTTPResponseMessage post(std::string path, std::string data, std::string type);
 };
 #endif

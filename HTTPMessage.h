@@ -9,7 +9,7 @@
 class HTTPMessage
 {
 public:
-    typedef std::map<std::string, std::string> headerMap;
+    typedef std::multimap<std::string, std::string> headerMap;
 
 protected:
     float version;
@@ -25,5 +25,6 @@ public:
     std::string getData();
     std::string printVersion();
     void setHeader(std::string key, std::string value);
+    void setData(std::string data);
 };
 #endif

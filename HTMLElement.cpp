@@ -117,3 +117,13 @@ std::string HTMLElement::getType()
 {
     return this->type;
 }
+
+std::map<std::string, std::string> HTMLElement::getAttributes()
+{
+    return this->attributes;
+}
+
+std::string HTMLElement::getContent()
+{
+    return this->content;
+}

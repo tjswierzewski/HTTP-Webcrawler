@@ -14,6 +14,7 @@ public:
     HTTPRequestMessage(float version, std::string method, std::string path, HTTPMessage::headerMap headers, std::string data = "");
     std::string getMethod();
     std::string getPath();
+    void setPath(std::string path);
     std::string format();
 };
 

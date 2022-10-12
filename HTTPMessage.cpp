@@ -25,7 +25,7 @@ HTTPMessage::headerMap HTTPMessage::getHeaders()
 }
 void HTTPMessage::setHeader(std::string key, std::string value)
 {
-    this->headers[key] = value;
+    this->headers.insert(std::pair<std::string, std::string>(key, value));
 }
 std::string HTTPMessage::getData()
 {
@@ -44,7 +44,7 @@ void HTTPMessage::parseHeaders(std::string *buffer)
         delim = buffer->find_first_of("\r\n");
         value = buffer->substr(0, delim);
         buffer->erase(0, delim + 2);
-        this->headers[header] = value;
+        this->headers.insert(std::pair<std::string, std::string>(header, value));
     }
     buffer->erase(0, 2);
 }
@@ -54,4 +54,9 @@ std::string HTTPMessage::printVersion()
     std::stringstream ss;
     ss << std::fixed << std::setprecision(1) << this->version;
     return ss.str();
+}
+
+void HTTPMessage::setData(std::string data)
+{
+    this->data = data;
 }

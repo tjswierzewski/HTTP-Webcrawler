@@ -4,3 +4,4 @@ webcrawler
 .vscode
 html
 HTMLTest
+*.key
