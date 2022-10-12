@@ -6,6 +6,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include "HTTPResponseMessage.h"
+#include "HTTPRequestMessage.h"
 
 class HTTPSSession
 {
@@ -21,8 +22,10 @@ private:
     SSL *ssl;
 
     int connectToHost();
-
     SSL_CTX *InitCTX(void);
+    HTTPResponseMessage send(HTTPRequestMessage);
+    void updateSession(HTTPResponseMessage response);
+    void setCookie(std::string value);
 
 public:
     HTTPSSession(const char *host, const char *port);

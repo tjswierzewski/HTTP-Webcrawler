@@ -88,12 +88,17 @@ SSL_CTX *HTTPSSession::InitCTX(void)
 
 HTTPResponseMessage HTTPSSession::get(std::string path)
 {
-    int rc;
-    char buffer[BUFFER_SIZE];
     HTTPMessage::headerMap headers;
     headers["HOST"] = this->host;
     headers["USER-AGENT"] = "Webcrawler/TS";
     HTTPRequestMessage request(1.0, HTTPMethod::Get, path, headers);
+    return this->send(request);
+}
+
+HTTPResponseMessage HTTPSSession::send(HTTPRequestMessage request)
+{
+    int rc;
+    char buffer[BUFFER_SIZE];
     std::string output = request.format();
     SSL_write(ssl, output.c_str(), output.length());
     rc = SSL_read(ssl, buffer, BUFFER_SIZE);
@@ -101,5 +106,30 @@ HTTPResponseMessage HTTPSSession::get(std::string path)
     {
         rc += SSL_read(ssl, buffer + rc, BUFFER_SIZE - rc);
     }
-    return HTTPResponseMessage(buffer);
+    HTTPResponseMessage response(buffer);
+    this->updateSession(response);
+    return response;
+}
+
+void HTTPSSession::updateSession(HTTPResponseMessage response)
+{
+    for (auto &[key, value] : response.getHeaders())
+    {
+        if (key == "Set-Cookie")
+        {
+            this->setCookie(value);
+        }
+    }
+}
+
+void HTTPSSession::setCookie(std::string cookie)
+{
+    std::string key, value;
+    int stringPointer;
+    stringPointer = cookie.find("=");
+    key = cookie.substr(0, stringPointer);
+    cookie.erase(0, stringPointer + 2);
+    stringPointer = cookie.find(";");
+    value = cookie.substr(0, stringPointer);
+    this->cookies[key] = value;
 }
