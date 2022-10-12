@@ -24,5 +24,6 @@ public:
     headerMap getHeaders();
     std::string getData();
     std::string printVersion();
+    void setHeader(std::string key, std::string value);
 };
 #endif

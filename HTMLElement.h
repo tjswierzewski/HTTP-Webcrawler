@@ -4,7 +4,7 @@
 #include <string>
 #include <list>
 #include <map>
-
+#include <functional>
 class HTMLElement
 {
 private:
@@ -16,7 +16,9 @@ private:
 
 public:
     HTMLElement(std::string type, std::map<std::string, std::string> attributes, std::string content);
+    std::string getType();
     static std::list<HTMLElement> parseDocument(std::string doc);
     static std::list<HTMLElement> parseElements(std::string doc);
+    static std::list<HTMLElement> search(std::list<HTMLElement> list, const std::function<bool(HTMLElement)> &f);
 };
 #endif

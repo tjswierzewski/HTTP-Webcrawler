@@ -11,6 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <iostream>
+#include <sstream>
 
 #define BUFFER_SIZE 10000
 
@@ -89,8 +90,6 @@ SSL_CTX *HTTPSSession::InitCTX(void)
 HTTPResponseMessage HTTPSSession::get(std::string path)
 {
     HTTPMessage::headerMap headers;
-    headers["HOST"] = this->host;
-    headers["USER-AGENT"] = "Webcrawler/TS";
     HTTPRequestMessage request(1.0, HTTPMethod::Get, path, headers);
     return this->send(request);
 }
@@ -99,6 +98,13 @@ HTTPResponseMessage HTTPSSession::send(HTTPRequestMessage request)
 {
     int rc;
     char buffer[BUFFER_SIZE];
+    request.setHeader("HOST", this->host);
+    request.setHeader("USER-AGENT", "Webcrawler/TS");
+    if (!this->cookies.empty())
+    {
+        request.setHeader("cookies", this->sendCookies());
+    }
+
     std::string output = request.format();
     SSL_write(ssl, output.c_str(), output.length());
     rc = SSL_read(ssl, buffer, BUFFER_SIZE);
@@ -128,8 +134,28 @@ void HTTPSSession::setCookie(std::string cookie)
     int stringPointer;
     stringPointer = cookie.find("=");
     key = cookie.substr(0, stringPointer);
-    cookie.erase(0, stringPointer + 2);
+    cookie.erase(0, stringPointer + 1);
     stringPointer = cookie.find(";");
     value = cookie.substr(0, stringPointer);
     this->cookies[key] = value;
+}
+
+std::string HTTPSSession::sendCookies()
+{
+    std::ostringstream buffer;
+    for (auto &[key, value] : this->cookies)
+    {
+        buffer << key << "=" << value << "; ";
+    }
+    std::string output = buffer.str();
+    output.erase(output.rfind(";"));
+    return output;
+}
+
+HTTPResponseMessage HTTPSSession::post(std::string path, std::string data)
+{
+    HTTPMessage::headerMap headers;
+    headers["Content-Length"] = data.length();
+    HTTPRequestMessage request(1.0, HTTPMethod::Post, path, headers, data);
+    return this->send(request);
 }

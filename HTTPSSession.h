@@ -26,10 +26,12 @@ private:
     HTTPResponseMessage send(HTTPRequestMessage);
     void updateSession(HTTPResponseMessage response);
     void setCookie(std::string value);
+    std::string sendCookies();
 
 public:
     HTTPSSession(const char *host, const char *port);
     ~HTTPSSession();
-    HTTPResponseMessage get(std::string);
+    HTTPResponseMessage get(std::string path);
+    HTTPResponseMessage post(std::string path, std::string data);
 };
 #endif

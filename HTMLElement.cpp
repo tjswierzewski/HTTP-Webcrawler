@@ -3,6 +3,7 @@
 #include <sstream>
 #include <list>
 #include <map>
+#include <functional>
 
 HTMLElement::HTMLElement(std::string type, std::map<std::string, std::string> attributes, std::string content)
 {
@@ -94,4 +95,25 @@ std::map<std::string, std::string> HTMLElement::parseAttributes(std::string doc)
         attributes[key] = value;
     }
     return attributes;
+}
+std::list<HTMLElement> HTMLElement::search(std::list<HTMLElement> list, const std::function<bool(HTMLElement)> &f)
+{
+    std::list<HTMLElement> matches;
+    for (auto &&element : list)
+    {
+        if (f(element))
+        {
+            matches.push_back(element);
+        }
+        for (auto &&element : HTMLElement::search(element.children, f))
+        {
+            matches.push_back(element);
+        }
+    }
+    return matches;
+}
+
+std::string HTMLElement::getType()
+{
+    return this->type;
 }

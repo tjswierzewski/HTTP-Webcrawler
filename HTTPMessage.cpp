@@ -23,6 +23,10 @@ HTTPMessage::headerMap HTTPMessage::getHeaders()
 {
     return this->headers;
 }
+void HTTPMessage::setHeader(std::string key, std::string value)
+{
+    this->headers[key] = value;
+}
 std::string HTTPMessage::getData()
 {
     return this->data;
