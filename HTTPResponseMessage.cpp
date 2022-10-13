@@ -1,5 +1,8 @@
 #include "HTTPResponseMessage.h"
 
+/**
+ * Create Response message from string
+ */
 HTTPResponseMessage::HTTPResponseMessage(std::string buffer) : HTTPMessage(buffer)
 {
     int delim;
@@ -13,10 +16,17 @@ HTTPResponseMessage::HTTPResponseMessage(std::string buffer) : HTTPMessage(buffe
     this->statusMessage = buffer.substr(0, delim);
 }
 
+/**
+ * Get response status
+ */
 int HTTPResponseMessage::getStatus()
 {
     return this->status;
 }
+
+/**
+ *  Get response status message
+ */
 std::string HTTPResponseMessage::getStatusMessage()
 {
     return this->statusMessage;

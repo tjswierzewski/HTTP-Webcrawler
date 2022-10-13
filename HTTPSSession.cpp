@@ -16,6 +16,9 @@
 
 #define BUFFER_SIZE 100000
 
+/**
+ * callback to record TLS key
+ */
 void ctx_callback(const SSL *ssl, const char *line)
 {
     std::ofstream file;
@@ -23,7 +26,9 @@ void ctx_callback(const SSL *ssl, const char *line)
     file << line;
     file.close();
 }
-
+/**
+ * Create HTTPS Session object
+ */
 HTTPSSession::HTTPSSession(const char *host, const char *port)
 {
     this->host = host;
@@ -44,7 +49,9 @@ HTTPSSession::HTTPSSession(const char *host, const char *port)
         throw std::invalid_argument("Error in SSL Connection");
     }
 };
-
+/**
+ * Delete HTTP Session object
+ */
 HTTPSSession::~HTTPSSession()
 {
     SSL_free(this->ssl);
@@ -52,6 +59,9 @@ HTTPSSession::~HTTPSSession()
     close(this->socket);
 }
 
+/**
+ * Create socket connection with Host
+ */
 int HTTPSSession::connectToHost()
 {
     struct addrinfo hints, *addr;
@@ -84,6 +94,9 @@ int HTTPSSession::connectToHost()
     return sock;
 }
 
+/**
+ * Initialize SSL certificate
+ */
 SSL_CTX *HTTPSSession::InitCTX(void)
 {
     OpenSSL_add_all_algorithms();
@@ -97,6 +110,9 @@ SSL_CTX *HTTPSSession::InitCTX(void)
     return ctx;
 }
 
+/**
+ * Send Get request to Host
+ */
 HTTPResponseMessage HTTPSSession::get(std::string path)
 {
     HTTPMessage::headerMap headers;
@@ -104,6 +120,9 @@ HTTPResponseMessage HTTPSSession::get(std::string path)
     return this->send(request);
 }
 
+/**
+ * Send Post request to Host
+ */
 HTTPResponseMessage HTTPSSession::send(HTTPRequestMessage request)
 {
     int rc;
@@ -151,6 +170,9 @@ HTTPResponseMessage HTTPSSession::send(HTTPRequestMessage request)
     return response;
 }
 
+/**
+ * Update session state
+ */
 void HTTPSSession::updateSession(HTTPResponseMessage response)
 {
     for (auto &[key, value] : response.getHeaders())
@@ -162,6 +184,9 @@ void HTTPSSession::updateSession(HTTPResponseMessage response)
     }
 }
 
+/**
+ * Set value of cookie
+ */
 void HTTPSSession::setCookie(std::string cookie)
 {
     std::string key, value;
@@ -174,6 +199,9 @@ void HTTPSSession::setCookie(std::string cookie)
     this->cookies[key] = value;
 }
 
+/**
+ * Format cookies in string to be sent in headers
+ */
 std::string HTTPSSession::sendCookies()
 {
     std::ostringstream buffer;
@@ -186,6 +214,9 @@ std::string HTTPSSession::sendCookies()
     return output;
 }
 
+/**
+ * Send Post request to Host
+ */
 HTTPResponseMessage HTTPSSession::post(std::string path, std::string data, std::string type)
 {
     HTTPMessage::headerMap headers;

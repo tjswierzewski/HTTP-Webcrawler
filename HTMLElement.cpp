@@ -5,6 +5,9 @@
 #include <map>
 #include <functional>
 
+/**
+ * Create HTML Element. Creates children from content string
+ */
 HTMLElement::HTMLElement(std::string type, std::map<std::string, std::string> attributes, std::string content)
 {
     this->type = type;
@@ -19,6 +22,10 @@ HTMLElement::HTMLElement(std::string type, std::map<std::string, std::string> at
         this->children = HTMLElement::parseElements(content);
     }
 }
+
+/**
+ * Create HTML Element list from HTML document
+ */
 std::list<HTMLElement> HTMLElement::parseDocument(std::string doc)
 {
     int HTMLOpen = doc.find("<!");
@@ -27,6 +34,9 @@ std::list<HTMLElement> HTMLElement::parseDocument(std::string doc)
     return HTMLElement::parseElements(doc);
 }
 
+/**
+ * Create HTML Element list from string
+ */
 std::list<HTMLElement> HTMLElement::parseElements(std::string doc)
 {
     std::map<std::string, std::string> attributes;
@@ -79,6 +89,9 @@ std::list<HTMLElement> HTMLElement::parseElements(std::string doc)
     return elements;
 }
 
+/**
+ * Get element attributes
+ */
 std::map<std::string, std::string> HTMLElement::parseAttributes(std::string doc)
 {
     std::map<std::string, std::string> attributes;
@@ -96,6 +109,10 @@ std::map<std::string, std::string> HTMLElement::parseAttributes(std::string doc)
     }
     return attributes;
 }
+
+/**
+ * Search for elements and children of elements in list where function evaluates as true
+ */
 std::list<HTMLElement> HTMLElement::search(std::list<HTMLElement> list, const std::function<bool(HTMLElement)> &f)
 {
     std::list<HTMLElement> matches;
@@ -113,16 +130,25 @@ std::list<HTMLElement> HTMLElement::search(std::list<HTMLElement> list, const st
     return matches;
 }
 
+/**
+ * Get HTML type of element
+ */
 std::string HTMLElement::getType()
 {
     return this->type;
 }
 
+/**
+ * Get element attributes
+ */
 std::map<std::string, std::string> HTMLElement::getAttributes()
 {
     return this->attributes;
 }
 
+/**
+ * Get element attributes
+ */
 std::string HTMLElement::getContent()
 {
     return this->content;

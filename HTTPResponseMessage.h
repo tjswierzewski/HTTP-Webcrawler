@@ -11,8 +11,19 @@ protected:
     std::string statusMessage;
 
 public:
+    /**
+     * Create Response message from string
+     */
     HTTPResponseMessage(std::string buffer);
+
+    /**
+     * Get response status
+     */
     int getStatus();
+
+    /**
+     *  Get response status message
+     */
     std::string getStatusMessage();
 };
 
