@@ -11,3 +11,12 @@ that I could debug the HTML library without pinging the server repeatedly.
 The main issue I ran into while implementing the HTTP library was correctly formatting the end of the message correctly.
 I also struggled with reading the correct size from the socket. I fixed this by reading the HTTP header one byte at a time until
 the double return. After that I check if there is a content length field and read that amount from the socket.
+
+Because Gradescope did not like my nested files last time I have left them all in the root folder. Here is a guide to what is in each file.
+
+Main File: webcrawler.cpp
+
+HTTP Library: HTTP*
+Main HTTP file: HTTPSSession.cpp
+
+HTML: HTMLElement.cpp
