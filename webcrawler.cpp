@@ -79,7 +79,7 @@ int main(int argc, char const *argv[])
         std::list<HTMLElement> secrets = HTMLElement::search(html, isSecret);
         for (auto &&element : secrets)
         {
-            std::cout << element.getContent().substr(7) << std::endl;
+            std::cout << element.getContent().substr(6) << std::endl;
             count++;
         }
     };
